@@ -227,10 +227,26 @@ function App() {
       {/* Header */}
       <header className="bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Ravana Quiz Challenge</h1>
-            <p className="text-orange-100 mt-1">Defeat the 10 heads of Ravana with your knowledge!</p>
+          {/* Company Logo */}
+          <div className="flex items-center">
+            <img 
+              src="https://download.logo.wine/logo/FMC_Corporation/FMC_Corporation-Logo.wine.png" 
+              alt="Company Logo" 
+              className="bg-white h-16 w-24 rounded-lg shadow-md"
+              onError={(e) => {
+                // Fallback to local logo if external URL fails
+                e.currentTarget.src = '/assets/company-logo.png';
+              }}
+            />
           </div>
+          
+          {/* Quiz Title - Center */}
+          <div className="flex-1 text-center">
+            <h1 className="text-3xl font-bold">Dahan Through Viveka: The PSM Purge</h1>
+            <p className="text-orange-100 mt-1">The beginning.</p>
+          </div>
+          
+          {/* Menu - Right */}
           <Menu onClearStorage={handleClearStorage} />
         </div>
       </header>

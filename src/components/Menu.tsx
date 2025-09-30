@@ -84,6 +84,7 @@ export const Menu: React.FC<MenuProps> = ({ onClearStorage }) => {
             <Button 
               variant="outline" 
               onClick={handleCancelClear}
+              className='bg-gray-500 hover:bg-gray-600'
             >
               Cancel
             </Button>
