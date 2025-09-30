@@ -27,20 +27,20 @@ function App() {
   const [questionStartTime, setQuestionStartTime] = useState<number>(0);
   const [showResults, setShowResults] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false); // Flag to track if state is loaded
 
   // Load saved game state on component mount
   useEffect(() => {
     const savedState = loadGameState();
-    if (savedState) {
-      setGameState(prev => ({
-        ...prev,
-        heads: savedState.heads || createInitialHeads(),
+    if (savedState && savedState.heads) {
+      setGameState({
+        heads: savedState.heads,
         selectedHead: savedState.selectedHead || null,
         currentQuestion: savedState.currentQuestion || null,
         timer: savedState.timer || 60,
         isAnswerSubmitted: savedState.isAnswerSubmitted || false,
         selectedAnswer: savedState.selectedAnswer || null
-      }));
+      });
       if (savedState.currentQuestionIndex !== undefined) {
         setCurrentQuestionIndex(savedState.currentQuestionIndex);
       }
@@ -48,10 +48,13 @@ function App() {
         setShowResults(savedState.showResults);
       }
     }
+    setIsInitialized(true); // Mark as initialized after loading
   }, []);
 
-  // Save game state whenever it changes
+  // Save game state whenever it changes (only after initialization)
   useEffect(() => {
+    if (!isInitialized) return; // Don't save until we've loaded the initial state
+    
     saveGameState({ 
       heads: gameState.heads,
       selectedHead: gameState.selectedHead,
@@ -62,7 +65,7 @@ function App() {
       currentQuestionIndex,
       showResults
     });
-  }, [gameState, currentQuestionIndex, showResults]);
+  }, [gameState, currentQuestionIndex, showResults, isInitialized]);
 
   // Timer effect for hiding defeated heads after 10 seconds
   useEffect(() => {
@@ -217,6 +220,7 @@ function App() {
     });
     setShowResults(false);
     setCurrentQuestionIndex(null);
+    setIsInitialized(true); // Keep initialized flag true after clearing
   }, []);
 
   const selectedHead = gameState.heads.find(h => h.id === gameState.selectedHead);
