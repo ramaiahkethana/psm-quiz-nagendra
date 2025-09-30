@@ -133,13 +133,13 @@ export const HeadSelectionPanel: React.FC<HeadSelectionPanelProps> = ({
         </div>
         
         {/* Status Message */}
-        {head.answeredCount === 5 && (
+        {(head.status === 'defeated' || head.status === 'laughing') && (
           <div className={`text-center p-3 rounded-lg ${
-            head.correctAnswers >= 3 
+            head.status === 'defeated' 
               ? 'bg-green-100 text-green-800' 
               : 'bg-red-100 text-red-800'
           }`}>
-            {head.correctAnswers >= 3 
+            {head.status === 'defeated' 
               ? '🎉 Head Defeated!' 
               : '😈 Head is Laughing!'}
           </div>

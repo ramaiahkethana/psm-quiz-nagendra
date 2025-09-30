@@ -53,9 +53,11 @@ export class AudioManager {
 
 // Game state management utilities
 export const checkVictoryCondition = (correctAnswers: number, totalAnswered: number): 'victory' | 'defeat' | 'ongoing' => {
+  const wrongAnswers = totalAnswered - correctAnswers;
+  
   if (correctAnswers >= 3) {
     return 'victory';
-  } else if (totalAnswered >= 5 && correctAnswers < 3) {
+  } else if (wrongAnswers >= 3) {
     return 'defeat';
   }
   return 'ongoing';

@@ -44,7 +44,7 @@ export const HeadComponent: React.FC<HeadComponentProps> = ({
   const getBorderClass = () => {
     if (isSelected) return 'border-4 border-blue-500';
     if (head.status === 'defeated') return 'border-4 border-green-500';
-    // if (head.status === 'laughing') return 'border-4 border-red-500';
+    if (head.status === 'laughing') return 'border-4 border-red-500';
     return 'border-2 border-gray-300 hover:border-gray-400';
   };
 
