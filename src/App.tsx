@@ -34,17 +34,59 @@ function App() {
     if (savedState) {
       setGameState(prev => ({
         ...prev,
-        heads: savedState.heads || createInitialHeads()
+        heads: savedState.heads || createInitialHeads(),
+        selectedHead: savedState.selectedHead || null,
+        currentQuestion: savedState.currentQuestion || null,
+        timer: savedState.timer || 60,
+        isAnswerSubmitted: savedState.isAnswerSubmitted || false,
+        selectedAnswer: savedState.selectedAnswer || null
       }));
+      if (savedState.currentQuestionIndex !== undefined) {
+        setCurrentQuestionIndex(savedState.currentQuestionIndex);
+      }
+      if (savedState.showResults !== undefined) {
+        setShowResults(savedState.showResults);
+      }
     }
   }, []);
 
   // Save game state whenever it changes
   useEffect(() => {
-    saveGameState({ heads: gameState.heads });
-  }, [gameState.heads]);
+    saveGameState({ 
+      heads: gameState.heads,
+      selectedHead: gameState.selectedHead,
+      currentQuestion: gameState.currentQuestion,
+      timer: gameState.timer,
+      isAnswerSubmitted: gameState.isAnswerSubmitted,
+      selectedAnswer: gameState.selectedAnswer,
+      currentQuestionIndex,
+      showResults
+    });
+  }, [gameState, currentQuestionIndex, showResults]);
 
-  // Timer effect
+  // Timer effect for hiding defeated heads after 10 seconds
+  useEffect(() => {
+    const checkHeadsToHide = () => {
+      const currentTime = Date.now();
+      setGameState(prev => ({
+        ...prev,
+        heads: prev.heads.map(head => {
+          if (head.status === 'defeated' && head.statusChangeTime && !head.isHidden) {
+            const timeSinceStatusChange = currentTime - head.statusChangeTime;
+            if (timeSinceStatusChange >= 10000) { // 10 seconds
+              return { ...head, isHidden: true };
+            }
+          }
+          return head;
+        })
+      }));
+    };
+
+    const interval = setInterval(checkHeadsToHide, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Timer effect for question countdown
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
@@ -63,6 +105,12 @@ function App() {
   }, [gameState.currentQuestion, gameState.isAnswerSubmitted, gameState.timer]);
 
   const handleHeadClick = useCallback((headId: string) => {
+    // Don't allow clicking on defeated or laughing heads
+    const selectedHead = gameState.heads.find(h => h.id === headId);
+    if (selectedHead && (selectedHead.status === 'defeated' || selectedHead.status === 'laughing')) {
+      return;
+    }
+
     setGameState(prev => ({
       ...prev,
       selectedHead: headId,
@@ -73,7 +121,7 @@ function App() {
     }));
     setShowResults(false);
     setCurrentQuestionIndex(null);
-  }, []);
+  }, [gameState.heads]);
 
   const handleQuestionSelect = useCallback((questionIndex: number) => {
     const selectedHead = gameState.heads.find(h => h.id === gameState.selectedHead);
@@ -122,7 +170,8 @@ function App() {
         // Check for status changes
         const statusInfo = handleHeadStatusChange(newCorrectAnswers, newAnsweredCount);
         
-        // Play sound effects
+        // Play sound effects and set status change time
+        let statusChangeTime = head.statusChangeTime;
         if (statusInfo.shouldPlaySound) {
           const audioManager = AudioManager.getInstance();
           if (statusInfo.soundType === 'blast') {
@@ -130,6 +179,7 @@ function App() {
           } else if (statusInfo.soundType === 'laughing') {
             audioManager.playLaughing();
           }
+          statusChangeTime = Date.now(); // Record when status changed
         }
 
         return {
@@ -138,7 +188,8 @@ function App() {
           correctAnswers: newCorrectAnswers,
           totalTime: newTotalTime,
           status: statusInfo.newStatus,
-          questionStatus: newQuestionStatus
+          questionStatus: newQuestionStatus,
+          statusChangeTime
         };
       }
       return head;

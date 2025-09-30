@@ -126,7 +126,7 @@ export const Scoreboard: React.FC<ScoreboardProps> = ({ heads }) => {
             <thead>
               <tr className="border-b-2 border-gray-300 bg-gray-50">
                 <th className="text-left p-3 font-semibold">Rank</th>
-                <th className="text-left p-3 font-semibold">Team Name</th>
+                <th className="text-left p-3 font-semibold">Head Name</th>
                 <th className="text-center p-3 font-semibold">Correct</th>
                 <th className="text-center p-3 font-semibold">Wrong</th>
                 <th className="text-center p-3 font-semibold">Time</th>

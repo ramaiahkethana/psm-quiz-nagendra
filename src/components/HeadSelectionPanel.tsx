@@ -34,9 +34,14 @@ export const HeadSelectionPanel: React.FC<HeadSelectionPanelProps> = ({
   const getQuestionButtonClass = (index: number) => {
     const baseClass = "w-16 h-16 text-lg font-bold rounded-lg transition-all duration-200 ";
     const status = head.questionStatus[index];
+    const isDisabled = head.status === 'defeated' || head.status === 'laughing';
     
-    if (currentQuestionIndex === index) {
+    if (currentQuestionIndex === index && !isDisabled) {
       return baseClass + "bg-blue-500 text-white border-2 border-blue-600";
+    }
+    
+    if (isDisabled) {
+      return baseClass + "bg-gray-400 text-gray-600 cursor-not-allowed opacity-50";
     }
     
     switch (status) {
@@ -60,6 +65,8 @@ export const HeadSelectionPanel: React.FC<HeadSelectionPanelProps> = ({
     if (head.status === 'laughing') return 'text-red-600';
     return 'text-blue-600';
   };
+
+  const isHeadCompleted = head.status === 'defeated' || head.status === 'laughing';
 
   return (
     <Card className="w-full max-w-md">
@@ -105,7 +112,7 @@ export const HeadSelectionPanel: React.FC<HeadSelectionPanelProps> = ({
                 key={index}
                 className={getQuestionButtonClass(index)}
                 onClick={() => onQuestionSelect(index)}
-                disabled={head.status === 'defeated'}
+                disabled={isHeadCompleted}
               >
                 Q{index + 1}
               </Button>
@@ -135,6 +142,13 @@ export const HeadSelectionPanel: React.FC<HeadSelectionPanelProps> = ({
             {head.correctAnswers >= 3 
               ? '🎉 Head Defeated!' 
               : '😈 Head is Laughing!'}
+          </div>
+        )}
+
+        {/* Completion message for inactive heads */}
+        {isHeadCompleted && (
+          <div className="text-center p-2 bg-gray-100 rounded-lg text-gray-600 text-sm">
+            This head is no longer interactive
           </div>
         )}
       </CardContent>

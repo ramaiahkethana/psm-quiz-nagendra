@@ -34,9 +34,10 @@ export const HeadComponent: React.FC<HeadComponentProps> = ({
   const getImageSrc = () => {
     if (head.status === 'defeated') {
       return '/assets/animation.gif';
-    } else if (head.status === 'laughing') {
-      return '/assets/laughing.png';
     }
+    // else if (head.status === 'laughing') {
+    //   return '/assets/laughing.png';
+    // }
     return '/assets/head.png';
   };
 
@@ -47,22 +48,9 @@ export const HeadComponent: React.FC<HeadComponentProps> = ({
     return 'border-2 border-gray-300 hover:border-gray-400';
   };
 
-  // Don't render if defeated (head is removed)
-  if (head.status === 'defeated') {
-    return (
-      <div className={`flex flex-col items-center mx-2 ${getSizeClass(index)}`}>
-        <div className={`relative ${getSizeClass(index)} cursor-pointer transition-all duration-300`}>
-          <img
-            src={getImageSrc()}
-            alt="Explosion"
-            className={`w-full h-full object-cover rounded-full ${getBorderClass()}`}
-          />
-        </div>
-        <span className="text-sm font-medium mt-2 text-green-600 line-through">
-          {head.name}
-        </span>
-      </div>
-    );
+  // Don't render defeated heads that have been hidden
+  if (head.status === 'defeated' && head.isHidden) {
+    return null;
   }
 
   return (
@@ -77,14 +65,16 @@ export const HeadComponent: React.FC<HeadComponentProps> = ({
           className={`w-full h-full object-cover rounded-full ${getBorderClass()}`}
         />
         {/* Status indicator */}
-        {head.answeredCount > 0 && (
+        {/* {head.answeredCount > 0 && head.status !== 'defeated' && (
           <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
             {head.answeredCount}
           </div>
-        )}
+        )} */}
       </div>
       <span className={`text-sm font-medium mt-2 text-center ${
-        head.status === 'laughing' ? 'text-red-600' : 'text-gray-700'
+        head.status === 'defeated' ? 'text-green-600' :
+        head.status === 'laughing' ? 'text-red-600 line-through' : 
+        'text-gray-700'
       }`}>
         {head.name}
       </span>

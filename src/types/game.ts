@@ -15,6 +15,8 @@ export interface Head {
   totalTime: number; // in seconds
   status: 'active' | 'defeated' | 'laughing'; // active, defeated (3+ correct), laughing (<3 correct after 5 questions)
   questionStatus: ('default' | 'correct' | 'wrong')[]; // Status for each question (Q1-Q5)
+  isHidden?: boolean; // For hiding defeated heads after animation
+  statusChangeTime?: number; // Timestamp when status changed
 }
 
 export interface GameState {
