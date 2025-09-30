@@ -4,6 +4,7 @@ import { HeadSelectionPanel } from './components/HeadSelectionPanel';
 import { QuestionDisplay } from './components/QuestionDisplay';
 import { Scoreboard } from './components/Scoreboard';
 import { Menu } from './components/Menu';
+import { PasswordProtection } from './components/PasswordProtection';
 import { createInitialHeads } from './data/questions';
 import { GameState } from './types/game';
 import { 
@@ -15,6 +16,8 @@ import {
 } from './lib/gameUtils';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [gameState, setGameState] = useState<GameState>({
     heads: createInitialHeads(),
     selectedHead: null,
@@ -24,13 +27,33 @@ function App() {
     selectedAnswer: null
   });
 
+  const audioManager = AudioManager.getInstance();
+
   const [questionStartTime, setQuestionStartTime] = useState<number>(0);
   const [showResults, setShowResults] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
   const [isInitialized, setIsInitialized] = useState(false); // Flag to track if state is loaded
 
-  // Load saved game state on component mount
+  // Check authentication on app load
   useEffect(() => {
+    const checkAuth = () => {
+      const isAuth = localStorage.getItem('psm-quiz-authenticated') === 'true';
+      setIsAuthenticated(isAuth);
+      setIsCheckingAuth(false);
+    };
+
+    checkAuth();
+  }, []);
+
+  // Handle successful authentication
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  // Load saved game state on component mount (only if authenticated)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    
     const savedState = loadGameState();
     if (savedState && savedState.heads) {
       setGameState({
@@ -49,7 +72,7 @@ function App() {
       }
     }
     setIsInitialized(true); // Mark as initialized after loading
-  }, []);
+  }, [isAuthenticated]);
 
   // Save game state whenever it changes (only after initialization)
   useEffect(() => {
@@ -227,33 +250,51 @@ function App() {
   const currentQuestion = selectedHead?.questions.find(q => q.id === gameState.currentQuestion);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          {/* Company Logo */}
-          <div className="flex items-center">
-            <img 
-              src="https://download.logo.wine/logo/FMC_Corporation/FMC_Corporation-Logo.wine.png" 
-              alt="Company Logo" 
-              className="bg-white h-16 w-24 rounded-lg shadow-md"
-              onError={(e) => {
-                // Fallback to local logo if external URL fails
-                e.currentTarget.src = '/assets/company-logo.png';
-              }}
-            />
+    <>
+      {/* Show loading state while checking authentication */}
+      {isCheckingAuth && (
+        <div className="min-h-screen bg-gradient-to-br from-red-900 via-orange-800 to-yellow-600 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
+            <p className="text-xl">Loading PSM Quiz...</p>
           </div>
-          
-          {/* Quiz Title - Center */}
-          <div className="flex-1 text-center">
-            <h1 className="text-3xl font-bold">Dahan Through Viveka: The PSM Purge</h1>
-            <p className="text-orange-100 mt-1">The beginning.</p>
-          </div>
-          
-          {/* Menu - Right */}
-          <Menu onClearStorage={handleClearStorage} />
         </div>
-      </header>
+      )}
+
+      {/* Show password protection if not authenticated */}
+      {!isCheckingAuth && !isAuthenticated && (
+        <PasswordProtection onAuthenticate={handleAuthSuccess} />
+      )}
+
+      {/* Show main quiz app if authenticated */}
+      {!isCheckingAuth && isAuthenticated && (
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50">
+          {/* Header */}
+          <header className="bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+              {/* Company Logo */}
+              <div className="flex items-center">
+                <img 
+                  src="https://download.logo.wine/logo/FMC_Corporation/FMC_Corporation-Logo.wine.png" 
+                  alt="Company Logo" 
+                  className="bg-white h-16 w-24 rounded-lg shadow-md"
+                  onError={(e) => {
+                    // Fallback to local logo if external URL fails
+                    e.currentTarget.src = '/assets/company-logo.png';
+                  }}
+                />
+              </div>
+              
+              {/* Quiz Title - Center */}
+              <div className="flex-1 text-center">
+                <h1 className="text-3xl font-bold">Dahan Through Viveka: The PSM Purge</h1>
+                <p className="text-orange-100 mt-1">The beginning.</p>
+              </div>
+              
+              {/* Menu - Right */}
+              <Menu onClearStorage={handleClearStorage} />
+            </div>
+          </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
@@ -315,7 +356,9 @@ function App() {
           <p>&copy; 2025 PSM Quiz Challenge. Test your knowledge and defeat the demon king!</p>
         </div>
       </footer>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 
