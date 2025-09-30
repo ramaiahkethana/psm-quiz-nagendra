@@ -312,7 +312,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>&copy; 2025 Ravana Quiz Challenge. Test your knowledge and defeat the demon king!</p>
+          <p>&copy; 2025 PSM Quiz Challenge. Test your knowledge and defeat the demon king!</p>
         </div>
       </footer>
     </div>
