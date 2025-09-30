@@ -41,7 +41,7 @@ export const PasswordProtection: React.FC<PasswordProtectionProps> = ({
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <img 
-              src="https://download.logo.wine/logo/FMC_Corporation/FMC_Corporation-Logo.wine.png" 
+              src="/assets/company-logo.png" 
               alt="Company Logo" 
               className="bg-white h-16 w-24 rounded-lg shadow-md"
               onError={(e) => {

@@ -27,8 +27,6 @@ function App() {
     selectedAnswer: null
   });
 
-  const audioManager = AudioManager.getInstance();
-
   const [questionStartTime, setQuestionStartTime] = useState<number>(0);
   const [showResults, setShowResults] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number | null>(null);
