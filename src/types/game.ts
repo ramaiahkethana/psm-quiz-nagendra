@@ -34,6 +34,6 @@ export const HEAD_NAMES = [
 ];
 
 export const TOPICS = [
-  'Desire & Lust', 'Anger & Rage', 'Delusion & Ignorance', 'Greed & Avarice', 'Pride & Ego',
-  'Arrogance & Vanity', 'Jealousy & Envy', 'Hatred & Disgust', 'Fear & Cowardice', 'Intelligence & Wisdom'
+  'Process Safety Management', 'Hose Management', 'Dust Management', 'Management of Change', 'Pre Start Up Safety Review',
+  'Interlock Bypass & Alarm Management', 'Process Hazard Analysis', 'Car Seal and Lock', 'Process Safety Information', 'Audit & Employee Participation'
 ];
