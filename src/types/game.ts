@@ -34,6 +34,6 @@ export const HEAD_NAMES = [
 ];
 
 export const TOPICS = [
-  'Process Safety Management', 'Hose Management', 'Dust hazards from Dust management', 'Management of Change', 'Pre Start Up Safety Review',
+  'Process Safety Management', 'Hose Management', 'Dust hazards', 'Management of Change', 'Pre Start Up Safety Review',
   'Interlock Bypass & Alarm Management', 'Process Hazard Analysis', 'Car Seal and Lock', 'Process Safety Information', 'Audit & Employee Participation'
 ];
