@@ -53,7 +53,6 @@ export const HeadsLayout: React.FC<HeadsLayoutProps> = ({
     <div className="w-full bg-gradient-to-b from-orange-100 to-yellow-100 py-8">
       <div className="flex justify-center items-end space-x-4 max-w-6xl mx-auto px-4">
         {visibleHeads.map((head, visibleIndex) => {
-          const originalIndex = heads.findIndex(h => h.id === head.id);
           const dynamicSizeClass = getSizeClassForVisible(visibleIndex, visibleHeads.length);
           
           return (
