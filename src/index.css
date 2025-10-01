@@ -57,3 +57,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom size classes for gradual head sizing */
+@layer utilities {
+  .w-18 {
+    width: 4.5rem; /* 88px */
+  }
+  .h-18 {
+    height: 4.5rem; /* 88px */
+  }
+  .w-22 {
+    width: 5.5rem; /* 88px */
+  }
+  .h-22 {
+    height: 5.5rem; /* 88px */
+  }
+  .w-26 {
+    width: 6.5rem; /* 104px */
+  }
+  .h-26 {
+    height: 6.5rem; /* 104px */
+  }
+}

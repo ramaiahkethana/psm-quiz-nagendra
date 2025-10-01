@@ -19,21 +19,21 @@ export const HeadsLayout: React.FC<HeadsLayoutProps> = ({
   const getSizeClassForVisible = (visibleIndex: number, totalVisible: number) => {
     if (totalVisible <= 1) return 'w-28 h-28'; // Single head gets max size
     
-    // For multiple heads, distribute sizes symmetrically
+    // For multiple heads, distribute sizes symmetrically (2-point decrements from w-28)
     const sizeOptions = [
-      'w-10 h-10', // smallest
-      'w-12 h-12', 
-      'w-16 h-16', 
-      'w-20 h-20', 
-      'w-24 h-24', 
-      'w-28 h-28'  // largest
+      'w-18 h-18', // smallest (28 - 10 = 18)
+      'w-20 h-20', // (28 - 8 = 20)
+      'w-22 h-22', // (28 - 6 = 22)
+      'w-24 h-24', // (28 - 4 = 24)
+      'w-26 h-26', // (28 - 2 = 26)
+      'w-28 h-28'  // largest (original size)
     ];
     
     const maxSizeIndex = sizeOptions.length - 1;
     
     if (totalVisible === 2) {
-      // For 2 heads: both get large size
-      return 'w-24 h-24';
+      // For 2 heads: both get large size (2 points less than max)
+      return 'w-26 h-26';
     } else if (totalVisible < 5) {
       // For 3-5 heads: increase to middle, then decrease
       const middle = Math.floor(totalVisible / 2);
